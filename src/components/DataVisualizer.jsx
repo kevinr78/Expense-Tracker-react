@@ -1,63 +1,64 @@
-import React from 'react'
+
+import TransactionProvider, {useTransactionContext} from '../components/TransactionContext.jsx';
+
+import { Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
 
 export default function DataVisualizer() {
+  const { transactions, setTransactions } = useTransactionContext();
+  const newArray =[]
+  transactions.forEach(element => {
+    newArray.push(element.amount)
+})
+
+console.log(newArray)
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Chart.js Line Chart',
+      },
+    },
+  };
+
+  const ee={
+    datasets:{
+      label: 'Dataset 1',
+      data: newArray,
+      borderColor: 'rgb(255, 99, 132)',
+      backgroundColor: 'rgba(255, 99, 132, 0.5)',
+    }
+  }
+
   return (
     <div className='shadow-lg w-1/2 '>
-      <h1 className='text-4xl font-bold mb-4'>Data Visualizer</h1>
-        <div className="overflow-x-auto">
-            <table className="table">
-            {/* head */}
-           {/*  <thead>
-                <tr>
-                <th></th>
-                <th>Name</th>
-                <th>Job</th>
-                <th>Favorite Color</th>
-                </tr>
-            </thead> */}
-            <tbody>
-                {/* row 1 */}
-                <tr>
-                <th>1</th>
-                <td>Cy Ganderton</td>
-                <td>Quality Control Specialist</td>
-                <td>Blue</td>
-                </tr>
-                <tr>
-                <th>1</th>
-                <td>Cy Ganderton</td>
-                <td>Quality Control Specialist</td>
-                <td>Blue</td>
-                </tr>
-                <tr>
-                <th>1</th>
-                <td>Cy Ganderton</td>
-                <td>Quality Control Specialist</td>
-                <td>Blue</td>
-                </tr>
-                <tr>
-                <th>1</th>
-                <td>Cy Ganderton</td>
-                <td>Quality Control Specialist</td>
-                <td>Blue</td>
-                </tr>
-                {/* row 2 */}
-                <tr>
-                <th>2</th>
-                <td>Hart Hagerty</td>
-                <td>Desktop Support Technician</td>
-                <td>Purple</td>
-                </tr>
-                {/* row 3 */}
-                <tr>
-                <th>3</th>
-                <td>Brice Swyre</td>
-                <td>Tax Accountant</td>
-                <td>Red</td>
-                </tr>
-            </tbody>
-            </table>
-        </div>
+      <Line
+        data={ee}
+/>
     </div>
   )
 }
