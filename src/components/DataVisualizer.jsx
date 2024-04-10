@@ -56,9 +56,9 @@ console.log(newArray)
 
   return (
     <div className='shadow-lg w-1/2 '>
-      <Line
+{/*       <Line
         data={ee}
-/>
+/> */}{"HEllo"}
     </div>
   )
 }
