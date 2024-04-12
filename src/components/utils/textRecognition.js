@@ -8,7 +8,7 @@ export async function recognizeImageText(imageFile) {
   }
   console.log(imageFile);
   const result = await worker.recognize(imageFile);
-  console.log(result.text);
+  console.log(result.data.text);
   await worker.terminate();
   return result;
 }

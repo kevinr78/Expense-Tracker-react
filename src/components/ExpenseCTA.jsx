@@ -5,7 +5,8 @@ import RemoveExpenseLogo from '../assets/remove-expense.svg'
 export default function ExpenseCTA({onChange}) {
   
   function handleCTAClick(e){
-    onChange(e.target.name)
+    console.log(e.target.closest('button').name)
+    onChange(e.target.closest('button').name)
     document.getElementById('my_modal_1').showModal()
   }
 

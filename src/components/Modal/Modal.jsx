@@ -18,7 +18,7 @@ export default function Modal({CTA}) {
 
   let formToBeDisplayed =null;
 
-  if(CTA==='manual-entry'){
+  if(CTA){
     formToBeDisplayed= <ManualEntry   
     onDataInput={handleChange}
      onClick={handleClick}
