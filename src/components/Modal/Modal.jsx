@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useTransactionContext } from "../TransactionContext";
 import ManualEntry from "./ManualEntry";
 import ImageUpload from "./ImageUpload";
+import { toast } from "react-toastify";
 
-
-export default function Modal({CTA}) {
+export default function Modal({ CTA, toastData }) {
   const [activeTab, setActiveTab] = useState("income");
   const [expenseData, setExpenseData] = useState({
     amount: null,
@@ -15,23 +16,30 @@ export default function Modal({CTA}) {
     id: null,
   });
 
+  let formToBeDisplayed = null;
 
-  let formToBeDisplayed =null;
-
-  if(CTA){
-    formToBeDisplayed= <ManualEntry   
-    onDataInput={handleChange}
-     onClick={handleClick}
-     activeTab={activeTab}>
-    <button className="btn mt-4" onClick={handleSave}>
-      Save
-    </button>
-    <button className="btn mt-4" onClick={()=>{
-      document.getElementById('my_modal_1').close()
-    }}>Close</button>
-  </ManualEntry>
-  }else{
-    formToBeDisplayed= <ImageUpload />
+  if (CTA) {
+    formToBeDisplayed = (
+      <ManualEntry
+        onDataInput={handleChange}
+        onClick={handleClick}
+        activeTab={activeTab}
+      >
+        <button className="btn mt-4" onClick={handleSave}>
+          Save
+        </button>
+        <button
+          className="btn mt-4"
+          onClick={() => {
+            document.getElementById("my_modal_1").close();
+          }}
+        >
+          Close
+        </button>
+      </ManualEntry>
+    );
+  } else {
+    formToBeDisplayed = <ImageUpload />;
   }
 
   const { transactions, setTransactions } = useTransactionContext();
@@ -39,13 +47,16 @@ export default function Modal({CTA}) {
   function handleClick(e) {
     setActiveTab(e.target.name);
   }
-  
+
   function handleChange(e) {
     setExpenseData((prevExpenseData) => {
-      if(e.target.name==='amount'){
+      const targetEle = e.target.name,
+        targetValue = e.target.value;
+
+      if (targetEle === "amount") {
         return {
           ...prevExpenseData,
-          [e.target.name]: Number(e.target.value),
+          [targetEle]: Number(targetValue),
           type: activeTab,
           id: (Math.random() * 10).toString(),
         };
@@ -53,33 +64,41 @@ export default function Modal({CTA}) {
 
       return {
         ...prevExpenseData,
-        [e.target.name]: e.target.value,
+        [targetEle]:
+          targetEle === "category" ? targetValue.split(" ")[1] : targetValue,
         type: activeTab,
         id: (Math.random() * 10).toString(),
       };
-      
     });
   }
 
-  function handleSave() {
+  async function handleSave() {
     setTransactions((prevTrans) => {
       return [...prevTrans, expenseData];
     });
-    clearData();
+
+    const result = await fetch(" http://localhost:3000/insertTransaction", {
+      method: "POST",
+      body: JSON.stringify(expenseData),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await result.json();
+    toastData("success", "Data Saved Successfully");
   }
 
-  return (
+  return createPortal(
     <>
       {/* Open the modal using document.getElementById('ID').showModal() method */}
 
       <dialog id="my_modal_1" className="modal">
         <div className="modal-box">
           <h3 className="font-bold text-lg">New Transaction</h3>
-          <div className="">
-              {formToBeDisplayed}
-          </div>
+          <div className="">{formToBeDisplayed}</div>
         </div>
       </dialog>
-    </>
+    </>,
+    document.getElementById("modal-root")
   );
 }
