@@ -4,13 +4,22 @@ const TransactionContext = createContext(undefined);
 
 export default function TransactionProvider({ children }) {
   const [transactions, setTransactions] = useState([]);
-  const url = "http://localhost:3000/getAllTransactions";
+  const token = localStorage.getItem("token");
+
+  const url = `http://localhost:3000/getAllTransactions`;
 
   const fetchData = async () => {
     try {
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${JSON.parse(token)}`,
+        },
+        body: null,
+      });
       const data = await response.json();
-      setTransactions(data);
+      setTransactions(data.result);
     } catch (error) {
       console.log("error", error.message);
     }

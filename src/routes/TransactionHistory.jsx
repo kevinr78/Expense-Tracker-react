@@ -1,10 +1,12 @@
 import { useState, useEffect, useContext } from "react";
 import FilterComponent from "../components/FilterComponent";
-import { useTransactionContext } from "../components/TransactionContext";
-import { Outlet, Link } from "react-router-dom";
+import { useTransactionContext } from "../components/Providers/TransactionContext";
+import { Outlet, Link, useNavigate, Navigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function TransactionHistory() {
   const URL = window.location.href;
+
   let isTransactionTab =
     URL.slice(URL.lastIndexOf("/") + 1) === "transactionHistory";
 
@@ -22,18 +24,31 @@ export default function TransactionHistory() {
   function getFilterCriteria(e) {
     filterCriteria[e.target.name] = e.target.value;
     filterCriteria.filterFlag = true;
+    console.log(filterCriteria);
   }
 
   async function filterTransactionByCriteria() {
-    const result = await fetch(" http://localhost:3000/filterTranasctions", {
-      method: "POST",
-      body: JSON.stringify(filterCriteria),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const data = await result.json();
-    setFilteredTransactions(data);
+    try {
+      const token = JSON.parse(localStorage.getItem("token"));
+      const result = await fetch(" http://localhost:3000/filterTranasctions", {
+        method: "POST",
+        body: JSON.stringify(filterCriteria),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await result.json();
+
+      if (!data.ok) {
+        toast.warn(dataFromServer.message, { theme: "dark" });
+      }
+
+      setFilteredTransactions(data.result);
+      resetFilters();
+    } catch (error) {
+      throw new Response("Not Found", { status: 404 });
+    }
   }
   function resetFilters() {
     setFilteredTransactions([]);
@@ -76,7 +91,7 @@ export default function TransactionHistory() {
   }
 
   return (
-    <div>
+    <>
       {isTransactionTab && (
         <FilterComponent
           onFilter={getFilterCriteria}
@@ -84,14 +99,40 @@ export default function TransactionHistory() {
           resetPage={resetFilters}
         />
       )}
-      <div className="">
-        <h1 className="text-4xl font-bold mb-4">Transaction History</h1>
+      <div className="w-full ">
+        <h1 className="text-4xl font-bold mb-4 ">
+          Transaction History
+          {!isTransactionTab && (
+            <span className="relative left-10">
+              <Link to={"/transactionHistory"} className="btn">
+                View All
+              </Link>
+            </span>
+          )}
+        </h1>
+        <div className="overflow-x-auto grow ">
+          <table className="table table-zebra overflow-scroll w-full ">
+            <thead>
+              <tr>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Type</th>
+                <th>Date</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>{returnTransactions()}</tbody>
+          </table>
+        </div>
       </div>
-      <div className="overflow-x-auto h-full grow ">
-        <table className="table table-zebra overflow-scroll w-full ">
-          <tbody>{returnTransactions()}</tbody>
-        </table>
-      </div>
-    </div>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+      />
+    </>
   );
 }

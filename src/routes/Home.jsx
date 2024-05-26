@@ -13,7 +13,7 @@ export default function Home({ activeTab }) {
         <SummaryContainer />
         <ExpenseCTA />
       </div>
-      <div className="flex justify-around gap-10 mt-10 px-10 h-auto ">
+      <div className="flex justify-evenly  mt-10 px-10 ">
         <TransactionHistory activeTab={activeTab} />
         <DataVisualizer activeTab={activeTab} />
       </div>

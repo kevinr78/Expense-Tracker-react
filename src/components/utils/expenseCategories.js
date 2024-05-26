@@ -1,5 +1,5 @@
 export const CATEGORIES = [
-  { emoji: "♦", name: "Category" },
+  { emoji: "", name: "Category" },
   { emoji: "🏠", name: "Rent" },
   { emoji: "🚗", name: "Gas" },
   { emoji: "🛒", name: "Groceries" },

@@ -1,6 +1,6 @@
 import { CATEGORIES } from "../components/utils/expenseCategories.js";
 import { useRef } from "react";
-import { useTransactionContext } from "./TransactionContext";
+import { useTransactionContext } from "./Providers/TransactionContext.jsx";
 
 export default function FilterComponent({ onFilter, onClick, resetPage }) {
   const dateFrom = useRef(null);

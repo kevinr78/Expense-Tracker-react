@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Summary from "./Summary.jsx";
 import TransactionProvider, {
   useTransactionContext,
-} from "../TransactionContext.jsx";
+} from "../Providers/TransactionContext.jsx";
 import calculateExpenses from "../Summary/calculateExpense.js";
 
 export default function SummaryContainer() {
@@ -13,10 +13,16 @@ export default function SummaryContainer() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch(url);
+      const token = JSON.parse(localStorage.getItem("token"));
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const data = await response.json();
-
-      setSummary(data);
+      setSummary(data.result);
     } catch (error) {
       console.log("error", error);
     }

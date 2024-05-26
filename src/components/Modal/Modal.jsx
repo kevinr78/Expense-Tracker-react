@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { useTransactionContext } from "../TransactionContext";
+import { useTransactionContext } from "../Providers/TransactionContext";
 import ManualEntry from "./ManualEntry";
 import ImageUpload from "./ImageUpload";
-import { toast } from "react-toastify";
+import { useAuthContext } from "../Providers/AuthProvider";
 
 export default function Modal({ CTA, toastData }) {
   const [activeTab, setActiveTab] = useState("income");
+  const { user } = useAuthContext();
   const [expenseData, setExpenseData] = useState({
     amount: null,
     type: null,
@@ -73,19 +74,24 @@ export default function Modal({ CTA, toastData }) {
   }
 
   async function handleSave() {
-    setTransactions((prevTrans) => {
-      return [...prevTrans, expenseData];
-    });
-
-    const result = await fetch(" http://localhost:3000/insertTransaction", {
+    const token = JSON.parse(localStorage.getItem("token"));
+    const result = await fetch(`http://localhost:3000/insertTransaction`, {
       method: "POST",
       body: JSON.stringify(expenseData),
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
     });
     const data = await result.json();
-    toastData("success", "Data Saved Successfully");
+    if (!data.ok) {
+      console.error(data.message);
+    } else {
+      setTransactions((prevTrans) => {
+        return [...prevTrans, expenseData];
+      });
+      toastData("success", "Data Saved Successfully");
+    }
   }
 
   return createPortal(

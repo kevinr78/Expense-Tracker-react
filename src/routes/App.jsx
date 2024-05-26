@@ -1,24 +1,14 @@
 import { useState, useEffect } from "react";
 import Modal from "../components/Modal/Modal.jsx";
 import Header from "../components/Header.jsx";
-import Home from "./Home.jsx";
-import DataVisualizer from "./DataVisualizer.jsx";
-import TransactionProvider, {
-  useTransactionContext,
-} from "../components/TransactionContext.jsx";
-import TransactionHistory from "./TransactionHistory.jsx";
-import Toast from "../components/Toast.jsx";
+import TransactionProvider from "../components/Providers/TransactionContext.jsx";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Outlet } from "react-router-dom";
+import AuthProvider from "../components/Providers/AuthProvider.jsx";
 
 function App() {
   const [manualEntryCTA, setManualEntryCTA] = useState(true);
-  const [isHomeActive, setIsHomeActive] = useState("home");
-
-  function onTabChange(value) {
-    setIsHomeActive(value);
-  }
 
   function handleChange(value) {
     if (value === "manual-entry") {
@@ -42,18 +32,20 @@ function App() {
   }
 
   return (
-    <div className="h-screen">
-      <Header gg={onTabChange} />
-      <Outlet />
-      <Modal CTA={manualEntryCTA} toastData={showToast} />
-      <ToastContainer
-        position="bottom-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-      />
+    <div>
+      <TransactionProvider>
+        <Header />
+        <Outlet />
+        <Modal CTA={manualEntryCTA} toastData={showToast} />
+        <ToastContainer
+          position="bottom-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+        />
+      </TransactionProvider>
     </div>
   );
 }
