@@ -104,7 +104,7 @@ export default function TransactionHistory() {
           Transaction History
           {!isTransactionTab && (
             <span className="relative left-10">
-              <Link to={"/transactionHistory"} className="btn">
+              <Link to={"transactionHistory"} className="btn">
                 View All
               </Link>
             </span>

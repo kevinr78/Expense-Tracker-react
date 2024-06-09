@@ -47,6 +47,15 @@ export default function SummaryContainer() {
           value={summary[1]?.Summary}
           desc={"Total Income"}
         />
+        <Summary
+          title={"Net Value"}
+          value={
+            summary[0]?.Summary > summary[1]?.Summary
+              ? summary[0]?.Summary - summary[1]?.Summary
+              : summary[1]?.Summary - summary[0]?.Summary
+          }
+          desc={"Net Value"}
+        />
       </>
       {/*   )} */}
     </div>

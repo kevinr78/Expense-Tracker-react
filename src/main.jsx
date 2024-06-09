@@ -11,7 +11,7 @@ import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import FilterComponent from "./components/FilterComponent.jsx";
 import Home from "./routes/Home.jsx";
-/* import { ProtectedRoute } from "./routes/ProtectedRoute.jsx"; */
+
 import AuthProvider from "./components/Providers/AuthProvider.jsx";
 import { logoutAction } from "./components/Header.jsx";
 const router = createBrowserRouter([
@@ -25,8 +25,10 @@ const router = createBrowserRouter([
     path: "/home",
     element: <App />,
     errorElement: <ErrorPage />,
+    /* action: AddTransactionOrAccount, */
     children: [
       { index: true, element: <Home /> },
+
       { path: "home", element: <App /> },
 
       {

@@ -19,7 +19,6 @@ export default function TransactionProvider({ children }) {
         body: null,
       });
       const data = await response.json();
-      setTransactions(data.result);
     } catch (error) {
       console.log("error", error.message);
     }

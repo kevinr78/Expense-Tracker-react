@@ -8,16 +8,7 @@ import { Outlet } from "react-router-dom";
 import AuthProvider from "../components/Providers/AuthProvider.jsx";
 
 function App() {
-  const [manualEntryCTA, setManualEntryCTA] = useState(true);
-
-  function handleChange(value) {
-    if (value === "manual-entry") {
-      setManualEntryCTA(true);
-    } else {
-      setManualEntryCTA(false);
-    }
-  }
-
+  const [activeModal, setActiveModal] = useState("manual_entry");
   function showToast(type, message) {
     switch (type) {
       case "success":
@@ -35,8 +26,8 @@ function App() {
     <div>
       <TransactionProvider>
         <Header />
-        <Outlet />
-        <Modal CTA={manualEntryCTA} toastData={showToast} />
+        <Outlet context={[activeModal, setActiveModal]} />
+        <Modal toastData={showToast} activeTab={activeModal} />
         <ToastContainer
           position="bottom-right"
           autoClose={5000}
